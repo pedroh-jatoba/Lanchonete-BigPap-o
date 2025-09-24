@@ -14,7 +14,7 @@ typedef struct{
 // Representa um pedido completo de um cliente
 typedef struct{
     int id;
-    ItemPedido itens[4] // Um pedido tem no máximo 4 itens (2 de comer, 2 de beber)
+    ItemPedido itens[4]; // Um pedido tem no máximo 4 itens (2 de comer, 2 de beber)
     int num_itens;
 
     int tempo_chegada; // Guarda o "tempo_global" em que o pedido chegou
@@ -35,7 +35,7 @@ typedef struct{
 
 // Representa um equipamento com capacidade limitada (chapa, fritadeira, etc)
 typedef struct{
-    char nome[50].
+    char nome[50];
     int capacidade_maxima; // Sera definido pelas regras do nome Arthur
     int capacidade_usada;
 } Equipamento;
@@ -53,4 +53,5 @@ typedef struct
 
 int main(){
     return 0;
+
 }
