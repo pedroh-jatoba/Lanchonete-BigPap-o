@@ -1,57 +1,102 @@
 #include <stdio.h>
-#include "enums.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
+#include "structs.h"
 
-// --- Estruturas dos Pedidos ---
 
-// Representa um item individual (ex: um sanduiche, uma batata)
-typedef struct{
-    char nome[50];
-    int tempo_preparo_total;
-    int tempo_restante_preparo;
-    StatusItem status;
-} ItemPedido;
+void main_loop(int timer_global, int tam_ciclo){
+    bool auto;
+    int var_control;
+    printf("Ligar modo automático (Número par: sim, Número ímpar: não)?");
+    scanf("%d", &var_control);
 
-// Representa um pedido completo de um cliente
-typedef struct{
-    int id;
-    ItemPedido itens[4]; // Um pedido tem no máximo 4 itens (2 de comer, 2 de beber)
-    int num_itens;
+    if(var_control % 2 == 0)
+    {
+        auto = true;
+        srand(time(NULL));
+    }
+    else
+    {
+        auto = false;
+    }
+    
+    do{
+        
+        printf("===============================================================\n");
+        printf("BEM VINDO AO BIG PAPÃO, O SANDUICHE MAIS RAPIDO DO NORDESTE!!\n");
+        printf("Queres fazer you pedido ?\n");
+        printf(" 1 - Fazer Pedido\n 2 - Não fazer pedido... Vagabundo\n 3 - Fechar o código\n");
+        printf("Resposta: ");
+        // Função Rand(var_control);
+        scanf("%d", &var_control);
 
-    int tempo_chegada; // Guarda o "tempo_global" em que o pedido chegou
-    int tempo_preparo_total; // Chave da prioridade para o Heap. Calculado na chegada.
-    StatusPedido status;
-} Pedido;
+        switch(var_control){
+            case 1:
+                int max_itens= 2;
 
-// --- Estruturas dos Recursos da Lanchonete ---
+                while(max_itens > 0){
+                int item_comer;
+                printf("\nEscolha ate 4 itens (2 de comer e 2 de beber)\n");
+                printf("==== Itens de Comer ====\n");
+                printf(" 1 - Sanduiche Simples\n 2 - Sanduiche Medio\n 3 - Sanduiche Elaborado\n 4 - Batata Frita\n 5 - Nao quero nada\n");
+                printf("Resposta: ");
 
-// Representa um funcionário e suas capacidades
-typedef struct{
-    int id;
-    Habilidade habilidades[3]; // Um funcionario pode ter multiplas habilidades
-    int num_habilidade;
-    StatusFuncionario status;
-    int id_pedido_atual; // Para saver qual pedido ele está trabalhando
-} Funcionario;
+                if(auto)
+                {
+                    item_comer = rand() % 5 + 1;
+                    printf("%d\n", item_comer);
+                }
+                else
+                {
+                    scanf("%d", &item_comer);
+                }
+                
 
-// Representa um equipamento com capacidade limitada (chapa, fritadeira, etc)
-typedef struct{
-    char nome[50];
-    int capacidade_maxima; // Sera definido pelas regras do nome Arthur
-    int capacidade_usada;
-} Equipamento;
+                int item_beber;
+                printf("==== Itens de Beber ====");
+                printf("1 - Refrigerante\n 2 - Milk-Shake\n 3 - Suco\n 4 - Nao quero nada");
+                printf("Resposta: ");
+                if(auto)
+                {
+                    item_beber = rand() % 4 + 1;
+                    printf("%d\n", item_beber);
+                }
+                else
+                {
+                    scanf("%d", &item_beber);
+                }
+                max_itens--;
+                }
+                break;
+            case 2:
+                printf("Vagabundo\n");
+                break;
+            case 3:
+                printf("Fechar o código\n");
+                return;
+            default:
+                printf("Animal, digite algo concreto!\n");
+                break;
+        }
 
-// --- Estrutura de Controle (Fila de Prioridades) ---
 
-typedef struct
-{
-    Pedido *pedidos; // Vetor dinâmico para armazenar os pedidos
-    int quantidade; // Quantidade atual de pedidos na fila
-    int capacidade; // Tamanho máximo do vetor
-} Heap;
+
+        printf("%d seg\n", timer_global);
+        timer_global = timer_global - tam_ciclo;
+    } while(timer_global >= 0);
+    
+
+    printf("Programa Finalizado\n");
+}
 
 
 
 int main(){
-    return 0;
+    int timer_global = 300;
+    int tam_ciclo = 100;
 
+    main_loop(timer_global, tam_ciclo);
+
+    return 0;
 }
