@@ -55,7 +55,7 @@ void main_loop(int timer_global, int tam_ciclo){
                 printf("\nEscolha ate 4 itens (2 de comer e 2 de beber)\n");
                 printf("\n\n==== Itens de Comer ====\n");
                 printf(" 1 - Sanduiche Simples\n 2 - Sanduiche Medio\n 3 - Sanduiche Elaborado\n 4 - Batata Frita\n 5 - Nao quero nada\n");
-                printf("Resposta: ");
+                printf("Resposta1: ");
 
                 if(res_auto){
                     item_comer = rand() % 5 + 1;
