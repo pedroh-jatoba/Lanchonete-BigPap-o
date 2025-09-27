@@ -2,23 +2,19 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
-#include "structs.h"
-#include "funcoes.c"
+#include "funcoes.h" // Inclui as DECLARAÇÕES das funções
 
 
 
 void main_loop(int timer_global, int tam_ciclo){
-    Heap *fila_pedidos;
-    if((fila_pedidos = malloc(sizeof(Heap))) == NULL) return;
 
-    Funcionario *funcionario;
-    if((funcionario = malloc(sizeof(Funcionario))) == NULL) return;
+    Heap fila_pedidos;
 
-    Equipamento *equipamento;
-    if((equipamento = malloc(sizeof(Equipamento))) == NULL) return;
+    if(!criarHeap(&fila_pedidos, 10)){
+        printf("Erro ao criar o heap.\n");
+        return ;
+    }
 
-    
-    
     bool res_auto = false;
     int var_control;
     printf("Ligar modo automático (Número par: sim, Número ímpar: não)?");
@@ -55,7 +51,7 @@ void main_loop(int timer_global, int tam_ciclo){
                 printf("\nEscolha ate 4 itens (2 de comer e 2 de beber)\n");
                 printf("\n\n==== Itens de Comer ====\n");
                 printf(" 1 - Sanduiche Simples\n 2 - Sanduiche Medio\n 3 - Sanduiche Elaborado\n 4 - Batata Frita\n 5 - Nao quero nada\n");
-                printf("Resposta1: ");
+                printf("Resposta: ");
 
                 if(res_auto){
                     item_comer = rand() % 5 + 1;
@@ -81,7 +77,6 @@ void main_loop(int timer_global, int tam_ciclo){
                 }
 
                 if((item_comer >= 1 && item_comer < 5) || (item_beber >= 1 && item_beber < 4)){
-                    fazer_pedido(item_comer, item_beber);
                     printf("Fazer Pedido\n");
                 }
                 else{
@@ -109,6 +104,8 @@ void main_loop(int timer_global, int tam_ciclo){
     } while(timer_global >= 0);
     
 
+
+    liberarHeap(&fila_pedidos);
     printf("Programa Finalizado\n");
 }
 
@@ -120,3 +117,4 @@ int main(){
     main_loop(timer_global, tam_ciclo);
     return 0;
 }
+
