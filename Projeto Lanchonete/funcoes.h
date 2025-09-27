@@ -1,12 +1,16 @@
 #ifndef FUNCOES_H
 #define FUNCOES_H
 
-void sair(){
-    exit(0);
-}
+#include "structs.h" // Inclui as definições das structs
 
-void fazer_pedido(int item_comer, int item_beber){};
-
-
-
+// --- Protótipos das Funções ---
+void sair();
+int criarHeap(Heap *heap, int capacidade);
+void liberarHeap(Heap* heap);
+void swap(Pedido *a, Pedido *b);
+void subirNoHeap(Heap* heap, int indice);
+void inserirPedido(Heap* heap, Pedido novoPedido);
+void descerNoHeap(Heap* heap, int indice);
+int removerItemPrioritario(Heap* heap, Pedido* pedidoRemovido);
+void imprimirHeap(Heap* heap);
 #endif
