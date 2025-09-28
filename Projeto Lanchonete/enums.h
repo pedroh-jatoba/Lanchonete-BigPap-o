@@ -20,6 +20,16 @@ typedef enum{
     OCUPADO
 } StatusFuncionario;
 
+typedef enum{
+    SANDUICHE_SIMPLES,
+    SANDUICHE_MEDIO,
+    SANDUICHE_ELABORADO,
+    BATATA_FRITA,
+    REFRIGERANTE,
+    MILK_SHAKE,
+    SUCO
+} NomePedido;
+
 // Enum para as diferentes habilidades que um funcionário pode ter
 typedef enum{
     HABILIDAE_CAIXA,

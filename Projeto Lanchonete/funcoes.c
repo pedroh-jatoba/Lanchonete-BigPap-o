@@ -71,6 +71,62 @@ void descerNoHeap(Heap* heap, int indice){
     }
 }
 
+ListaPedidos removerLista(ListaPedidos lista)
+{
+    NodePedido *proxNode = lista.cabeca->prox;
+    proxNode->ante = NULL;
+    lista.cabeca->prox = NULL;
+    lista.cabeca = proxNode;
+    return lista;
+}
+
+ListaPedidos criarLista()
+{
+    ListaPedidos lista;
+    lista.quantidade = 0;
+    lista.cabeca = NULL;
+    lista.cauda = NULL;
+    return lista;
+}
+
+ListaPedidos adicionarLista(ListaPedidos lista, Pedido pedido)
+{
+    NodePedido *novonode = (NodePedido*) malloc(sizeof(NodePedido)); 
+    novonode->pedido;
+    novonode->ante = lista.cauda;
+    novonode->prox = NULL;
+    lista.cauda->prox = novonode;
+    lista.cauda = novonode;
+    return lista;
+}
+
+int calcularPreparo(NomePedido pedido) //Retorna o tempo de preparo em segundos
+{
+    switch(pedido)
+    {
+        case BATATA_FRITA:
+            return 190; // 3 min e 10 seg
+
+        case SANDUICHE_SIMPLES:
+            return 58;
+
+        case SANDUICHE_MEDIO:
+            return 88; // 1 min e 28 seg
+
+        case SANDUICHE_ELABORADO:
+            return 105; // 1 min e 45 seg
+
+        case REFRIGERANTE:
+            return 5;
+
+        case SUCO:
+            return 38;
+
+        case MILK_SHAKE:
+            return 60; // 1 min
+    }
+}
+
 int removerItemPrioritario(Heap* heap, Pedido* pedidoRemovido){
     if(heap->quantidade <= 0) return 0;
 
@@ -140,7 +196,6 @@ void imprimirHeap(Heap* heap) {
 
 
 
-
 // int verifica_chapa()
 // {
 //     return 0;
@@ -156,47 +211,46 @@ void imprimirHeap(Heap* heap) {
 //     return 0;
 // }
 
-// int tempo_restante(Pedido *pedido, Funcionario funcionario[], Equipamento equipamentos[])
-// {
-//     int tempo_preparo = pedido->itens[0].tempo_preparo_total;
-//     int local_vago;
-//     int tempo_funcionario;
+int tempo_restante(Pedido *pedido, Funcionario funcionario[], Equipamento equipamentos[])
+{
+    int tempo_preparo = pedido->itens[0].tempo_preparo_total;
+    int local_vago;
+    int tempo_funcionario;
 
     
     
-//     /*
-//     - tempo_preparo = tempo que ele demora para ser preparado
-//     - local_vago = tempo onde o local onde ele será preparado estará vazio 
-//     - tempo_funcionario = menor tempo em que teremos um funcionário apto a preparar;
+    
+/*
+    - tempo_preparo = tempo que ele demora para ser preparado
+    - local_vago = tempo onde o local onde ele será preparado estará vazio 
+    - tempo_funcionario = menor tempo em que teremos um funcionário apto a preparar;
 
-//     if (tempo_funcionario > local_vago)
-//     {
-//         tempo_restante = tempo_preparo + local_vago; 
-//     }
-//     else
-//     {
-//         tempo_restante = tempo_preparo + tempo_funcionario;
-//     }
+    if (tempo_funcionario > local_vago)
+    {
+        tempo_restante = tempo_preparo + local_vago; 
+    }
+    else
+    {
+        tempo_restante = tempo_preparo + tempo_funcionario;
+    }
 
-//     - Faça isso com todos os outros itens da lista:
-//         - Puxa um item do pedido;
-//         - tempo_preparo = tempo que ele demora para ser preparado
-//         - local_vago = tempo onde o local onde ele será preparado estará vazio 
-//         - tempo_funcionario = menor tempo em que teremos um funcionário apto a
+    - Faça isso com todos os outros itens da lista:
+    - Puxa um item do pedido;
+    - tempo_preparo = tempo que ele demora para ser preparado
+    - local_vago = tempo onde o local onde ele será preparado estará vazio 
+    - tempo_funcionario = menor tempo em que teremos um funcionário apto a
 
-//     if (tempo_funcionario > local_vago)
-//     {
-//         if(tempo_restante < tempo_preparo + local_vago) 
-//             tempo_restante = tempo_preparo + local_vago; 
+    if (tempo_funcionario > local_vago)
+    {
+        if(tempo_restante < tempo_preparo + local_vago) tempo_restante = tempo_preparo + local_vago; 
         
-//     }
-//     else
-//     {
-//         if(tempo_restante < tempo_preparo + tempo_funcionario)
-//             tempo_restante = tempo_preparo + tempo_funcionario;
-//     }
-//     */
-//     return 0;
-// }
+    }
+    else
+    {
+        if(tempo_restante < tempo_preparo + tempo_funcionario) tempo_restante = tempo_preparo + tempo_funcionario;
+    }
+*/
+    return 0;
+    }
 
 
