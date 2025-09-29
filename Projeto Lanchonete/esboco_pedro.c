@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <boolean.h>
+#include <stdbool.h>
 
 typedef struct 
 {
@@ -46,7 +46,7 @@ pedido pegar_pedido()
         scanf("%d", &p.beber2);
         p.itens_restantes = 4;
         p.tempo_restante = 300;
-    } while (p.comer1 >= 0, p.comer1 < 5, p.comer2 >= 0; p.comer2 < 5, p.beber1 >= 0, p.beber1 < 4, p.beber2 >= 0, p.beber2 < 4); // Tratamento de erro 
+    } while (p.comer1 >= 0, p.comer1 < 5, p.comer2 >= 0, p.comer2 < 5, p.beber1 >= 0, p.beber1 < 4, p.beber2 >= 0, p.beber2 < 4); // Tratamento de erro 
 
     return p;
 }
@@ -72,7 +72,7 @@ void separa_pedidos(pedido p)
     
     int separadores = 0; // Quantidade de separadores trabalhando
 
-    while(separa_funcionarios("separador") /e lista de espera tiver algo/)
+    while(separa_funcionarios("separador") /*e lista de espera tiver algo*/)
     {
         separadores++;
 
