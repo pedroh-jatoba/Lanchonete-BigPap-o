@@ -1,9 +1,36 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "structs.h"
 
 void sair(){
     printf("\nPrograma finalizado!");
     exit(0);
+}
+
+int receberInput(bool res_auto, int opc_auto, int opc_manual)
+{
+    int var_control;
+    if(res_auto)
+    {
+        var_control = rand() % 2 + 1;
+        printf("%d\n", var_control);
+    }
+    else
+    {
+        scanf("%d", &var_control);
+        //Tratamento de erro
+        if(var_control > 0 && var_control <= opc_manual)
+            return var_control;
+        printf("\nResposta inválida!\n");
+        return receberInput(res_auto, opc_auto, opc_manual);
+    }
+}
+
+void  recepcao(Equipamento equipamentos[], Pedido pedido)
+{
+    
+    //Remover da lista 
+    equipamentos[RECEPCAO].fila.cabeca->pedido.itens[0];
 }
 
 int criarHeap(Heap *heap, int capacidade){
@@ -77,6 +104,7 @@ ListaPedidos removerLista(ListaPedidos lista)
     proxNode->ante = NULL;
     lista.cabeca->prox = NULL;
     lista.cabeca = proxNode;
+    lista.quantidade--;
     return lista;
 }
 
@@ -97,7 +125,119 @@ ListaPedidos adicionarLista(ListaPedidos lista, Pedido pedido)
     novonode->prox = NULL;
     lista.cauda->prox = novonode;
     lista.cauda = novonode;
+    lista.quantidade++;
     return lista;
+}
+
+void imprimirStatusPedido(StatusPedido status)
+{
+    switch(status) {
+        case RECEBIDO:
+            printf("Status: Recebido\n");
+            break;
+        case PREPARANDO_ITENS:
+            printf("Status: Preparando itens\n");
+            break;
+        case AGUARDANDO_MONTAGEM:
+            printf("Status: Aguardando montagem\n");
+            break;
+        case ENTREGUE:
+            printf("Status: Entregue\n");
+            break;
+        case ATRASADO:
+            printf("Status: Atrasado\n");
+            break;
+        case ARMAZENADO:
+            printf("Status: Armazenado\n");
+            break;
+        default:
+            printf("Status desconhecido\n");
+            break;
+    }
+}
+
+void imprimirStatusItem(StatusItem status)
+{
+    switch (status)
+    {
+    case AGUARDANDO_PREPARADO:
+        printf("Aguardando preparo.\n");
+        break;
+    
+    case EM_PREPARO:
+        printf("Em preparo.\n");
+        break;
+
+    case PRONTO:
+        printf("Pronto.\n");
+        break;
+
+    default:
+        break;
+    }
+}
+
+void imprimirNomeDoItem(NomePedido nome)
+{
+    switch(nome) {
+        case SANDUICHE_SIMPLES:
+            printf("Sanduíche Simples:\n");
+            break;
+        case SANDUICHE_MEDIO:
+            printf("Sanduíche Médio:\n");
+            break;
+        case SANDUICHE_ELABORADO:
+            printf("Sanduíche Elaborado:\n");
+            break;
+        case BATATA_FRITA:
+            printf("Batata Frita:\n");
+            break;
+        case REFRIGERANTE:
+            printf("Refrigerante:\n");
+            break;
+        case MILK_SHAKE:
+            printf("Milk Shake:\n");
+            break;
+        case SUCO:
+            printf("Suco:\n");
+            break;
+        default:
+            printf("Pedido desconhecido:\n");
+            break;
+    }
+}
+
+void imprimirItensPedido(ItemPedido item)
+{
+    printf("\n");
+    imprimirNomeDoItem(item.nome);
+    imprimirStatusItem(item.status);
+}
+
+void imprimirPedido(Pedido pedido)
+{
+    printf("\nPEDIDO %d\n", pedido.id);
+    for(int i = 0; i<pedido.num_itens; i++)
+    {
+        imprimirItensPedido(pedido.itens[i]);
+    }
+    printf("Tempo de chegada: %ds.\n", pedido.tempo_chegada);
+    printf("Tempo de preparo total: %ds.\n", pedido.tempo_preparo_total);
+}
+
+void imprimirLista(ListaPedidos lista)
+{
+    if(lista.cabeca == NULL)
+    {
+        printf("\nA fila está vazia!\n");
+        return;
+    }
+    NodePedido *pivo = lista.cabeca;
+    while(pivo != NULL)
+    {
+        imprimirPedido(pivo->pedido);
+    }
+    printf("Quantidade de pedidos: %d\n", lista.quantidade);
 }
 
 int calcularPreparo(NomePedido pedido) //Retorna o tempo de preparo em segundos
@@ -162,7 +302,7 @@ void imprimirNoHeap(Heap* heap, int indice, int nivel) {
     for (int i = 0; i < nivel; i++) {
         printf("    ");
     }
-    printf("(ID:%d, T:%d)\n", heap->pedidos[indice].id, heap->pedidos[indice].tempo_preparo_total);
+    printf("(ID: %d T:%d)\n", heap->pedidos[indice].id, heap->pedidos[indice].tempo_preparo_total);
 
     // Visita o filho da esquerda
     imprimirNoHeap(heap, 2 * indice + 1, nivel + 1);
@@ -184,7 +324,7 @@ void imprimirHeap(Heap* heap) {
     printf("Visao Vetor [Quantidade: %d, Capacidade: %d]\n", heap->quantidade, heap->capacidade);
     printf("[ ");
     for (int i = 0; i < heap->quantidade; i++) {
-        printf("ID %d (T:%d) | ", heap->pedidos[i].id, heap->pedidos[i].tempo_preparo_total);
+        printf("(ID: %d T:%d) | ", heap->pedidos[i].id, heap->pedidos[i].tempo_preparo_total);
     }
     printf("]\n\n");
 
@@ -193,8 +333,6 @@ void imprimirHeap(Heap* heap) {
     imprimirNoHeap(heap, 0, 0); // Chama a função recursiva a partir da raiz
     printf("--------------------------\n");
 }
-
-
 
 // int verifica_chapa()
 // {

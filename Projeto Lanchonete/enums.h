@@ -11,8 +11,23 @@ typedef enum{
     PREPARANDO_ITENS,
     AGUARDANDO_MONTAGEM,
     ENTREGUE,
-    ATRASADO
+    ATRASADO,
+    ARMAZENADO
 } StatusPedido;
+
+typedef enum{
+    PENEIRA,
+    CHAPA,
+    LIQUIDIFICADOR_MILK_SHAKE,
+    LIQUIDIFICADOR_SUCO
+} NomeEquipamento;
+
+typedef enum{
+    RECEPCAO,
+    MONTAR_BANDEJAS,
+    SEPARADOR,
+    CAIXA
+} NomeLocal;
 
 // Enum para o status de um funcionário
 typedef enum{
@@ -27,7 +42,8 @@ typedef enum{
     BATATA_FRITA,
     REFRIGERANTE,
     MILK_SHAKE,
-    SUCO
+    SUCO, 
+    NADA
 } NomePedido;
 
 // Enum para as diferentes habilidades que um funcionário pode ter
