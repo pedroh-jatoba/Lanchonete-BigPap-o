@@ -2,8 +2,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
-#include "structs.h"
-#include "funcoes.h" // Inclui as DECLARAÇÕES das funções
 #include "funcoes.c"
 
 int fazerPedido(bool res_auto)
@@ -105,13 +103,13 @@ int main(){
     int tam_ciclo = 100;
 
     Equipamento equipamentos[4];
-    for(int i = 0; i<4; i++)
+    for(int i = 0; i < 4; i++)
     {
         equipamentos[i].nome = i;
     }//Nomear cada equipamento
 
     Locais locais[4];
-    for(int i = 0; i<4; i++)
+    for(int i = 0; i < 4; i++)
     {
         locais[i].nome = i;
     }//Nomear cada local
@@ -120,4 +118,3 @@ int main(){
     
     return 0;
 }
-
