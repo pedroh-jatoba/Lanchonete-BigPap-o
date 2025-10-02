@@ -22,6 +22,19 @@ typedef struct{
     StatusPedido status;
 } Pedido;
 
+
+typedef struct NodePedido {
+    Pedido pedido;
+    struct NodePedido *ante;
+    struct NodePedido *prox;
+} NodePedido;
+
+typedef struct{
+    NodePedido *cabeca;
+    NodePedido *cauda;
+    int quantidade;
+} ListaPedidos;
+
 // --- Estruturas dos Recursos da Lanchonete ---
 
 // Representa um funcionário e suas capacidades
@@ -50,7 +63,17 @@ typedef struct{
     ItemPreparo itens_preparo[6];
     ItemPreparo armazenamento[4];
     ListaPedidos fila;
-} Equipamento; 
+} Equipamento;
+
+
+// --- Estrutura de Controle (Fila de Prioridades) ---
+
+typedef struct
+{
+    Pedido *pedidos; // Vetor dinâmico para armazenar os pedidos
+    int quantidade; // Quantidade atual de pedidos na fila
+    int capacidade; // Tamanho máximo do vetor
+} Heap;
 
 typedef struct 
 {
@@ -64,26 +87,6 @@ typedef struct
 } Locais;
 
 
-// --- Estrutura de Controle (Fila de Prioridades) ---
-
-typedef struct
-{
-    Pedido *pedidos; // Vetor dinâmico para armazenar os pedidos
-    int quantidade; // Quantidade atual de pedidos na fila
-    int capacidade; // Tamanho máximo do vetor
-} Heap;
-
-typedef struct{
-    Pedido pedido;
-    NodePedido *ante;
-    NodePedido *prox;
-} NodePedido;
-
-typedef struct{
-    NodePedido *cabeca;
-    NodePedido *cauda;
-    int quantidade;
-} ListaPedidos;
 
 
 
