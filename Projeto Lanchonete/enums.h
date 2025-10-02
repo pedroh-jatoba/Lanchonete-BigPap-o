@@ -48,7 +48,7 @@ typedef enum{
 
 // Enum para as diferentes habilidades que um funcionário pode ter
 typedef enum{
-    HABILIDAE_CAIXA,
+    HABILIDADE_CAIXA,
     HABILIDADE_SEPARACAO,
     HABILIDADE_SANDUICHE,
     HABILIDADE_BATATA,
