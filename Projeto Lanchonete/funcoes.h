@@ -1,34 +1,53 @@
 #ifndef FUNCOES_H
 #define FUNCOES_H
 
-#include "structs.h" // Inclui as definições das structs
+#include <stdbool.h>
+#include "structs.h"
 
-// --- Protótipos das Funções ---
+// Utilitários
 void sair();
+
+// Input
 int receberInput(bool res_auto, int opc_auto, int opc_manual);
+
+// Heap
 int criarHeap(Heap *heap, int capacidade);
 void liberarHeap(Heap* heap);
-void swap(Pedido *a, Pedido *b);
-void subirNoHeap(Heap* heap, int indice);
 void inserirPedido(Heap* heap, Pedido novoPedido);
-void descerNoHeap(Heap* heap, int indice);
 int removerItemPrioritario(Heap* heap, Pedido* pedidoRemovido);
 void imprimirHeap(Heap* heap);
 
-// Funções de Lista
-ListaPedidos criarLista();
-ListaPedidos removerLista(ListaPedidos lista);
+// Fila de Prioridade
+void verificarEPriorizarPedidos(Locais *local, int tempo_atual);
+void processarFilaPrioridade(Locais *local);
 
-// Funções de Impressão
-void imprimirStatusPedido(StatusPedido status);
-void imprimirStatusItem(StatusItem status);
-void imprimirNomeDoItem(NomePedido nome);
-void imprimirItensPedido(ItemPedido item);
-void imprimirPedido(Pedido pedido);
+// Lista de pedidos (simples)
+ListaPedidos criarLista();
+NodePedido* criarNodePedido(Pedido pedido);
+void adicionarListaPedidos(ListaPedidos *lista, NodePedido *novo_node); // adiciona no final
+void adicionarListaPedidosOrdenado(ListaPedidos *lista, NodePedido *novo_node);
+NodePedido* removerListaPedidos_front(ListaPedidos *lista); // remove e retorna a cabeça (ou NULL)
 void imprimirLista(ListaPedidos lista);
 
-// Funções de Cálculo
-int calcularPreparo(NomePedido pedido);
-int tempo_restante(Pedido *pedido, Funcionario funcionario[], Equipamento equipamentos[]);
+// Funções de impressão helpers
+void imprimirPedido(Pedido pedido);
+void imprimirNomeDoItem(NomePedido nome);
+void imprimirStatusItem(StatusItem status);
 
-#endif
+// Recepção / criação de pedidos
+NodePedido* receberPedido(bool res_auto, int *novo_id);
+void recepcao(Locais *r, int ciclo, bool res_auto, ListaFuncionarios *reserva);
+
+// Cálculo de preparo
+int calcularPreparo(NomePedido pedido);
+
+// Inicializadores simples
+ListaFuncionarios criarListaFuncionarios();
+
+//Separador
+// Adicione/Atualize estes protótipos em funcoes.h
+void distribuirItens(NodePedido *pedido_node, Equipamento equipamentos[]);
+void processarSeparador(Locais *local_separador, Equipamento equipamentos[], ListaFuncionarios *reserva, ListaPedidos *pedidos_em_preparo);
+void separador(Locais *local_separador, ListaFuncionarios *reserva);
+
+#endif // FUNCOES_H
