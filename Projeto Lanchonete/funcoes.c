@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 #include "funcoes.h"
 // #include "structs.h"
 
@@ -10,36 +12,28 @@ void sair(){
 }
 
 
-
-
 /*##################### FUNCAO MAIN LOOP ########################*/
 int receberInput(bool res_auto, int opc_auto, int opc_manual)
 {
     int var_control;
     if(res_auto)
     {
-        var_control = rand() % 2 + 1;
+        var_control = rand() % opc_auto + 1;
         printf("%d\n", var_control);
+        return var_control;
     }
     else
     {
         scanf("%d", &var_control);
+        
         //Tratamento de erro
         if(var_control > 0 && var_control <= opc_manual)
             return var_control;
         printf("\nResposta inválida!\n");
+        printf("Tente Novamente\n");
         return receberInput(res_auto, opc_auto, opc_manual);
     }
 }
-
-void  recepcao(Equipamento equipamentos[], Pedido pedido)
-{
-    
-    //Remover da lista 
-    equipamentos[RECEPCAO].fila.cabeca->pedido.itens[0];
-}
-
-
 
 
 
@@ -73,7 +67,7 @@ void swap(Pedido *a, Pedido *b){
 
 void subirNoHeap(Heap* heap, int indice){
     while(indice > 0 && heap->pedidos[indice].tempo_preparo_total < heap->pedidos[(indice - 1) / 2].tempo_preparo_total){
-        swap(&heap->pedidos[indice].tempo_preparo_total, &heap->pedidos[(indice - 1) / 2].tempo_preparo_total);
+        swap(&heap->pedidos[indice], &heap->pedidos[(indice - 1) / 2]);
         indice = (indice - 1) / 2;
     }
 }
@@ -203,19 +197,65 @@ ListaPedidos removerLista(ListaPedidos lista)
 
 ListaPedidos adicionarLista(ListaPedidos lista, Pedido pedido)
 {
-    NodePedido *novonode = (NodePedido*) malloc(sizeof(NodePedido)); 
-    novonode->pedido;
-    novonode->ante = lista.cauda;
-    novonode->prox = NULL;
-    lista.cauda->prox = novonode;
-    lista.cauda = novonode;
+    NodePedido *novo_node = (NodePedido*) malloc(sizeof(NodePedido)); 
+    novo_node->pedido = pedido;
+    novo_node->ante = lista.cauda;
+    novo_node->prox = NULL;
+    lista.cauda->prox = novo_node;
+    lista.cauda = novo_node;
     lista.quantidade++;
     return lista;
 }
 
+/*################# FUNCOES LISTA DE PEDIDOS ##################################*/
 
+ListaFuncionarios criarListaFuncionarios()
+{
+    ListaFuncionarios lista;
+    lista.quantidade = 0;
+    lista.cabeca = NULL;
+    lista.cauda = NULL;
+    return lista;
+}
 
+ListaFuncionarios removerListaFuncionario(ListaFuncionarios lista, NodeFuncionario *funcionario)
+{
+    if(lista.cabeca == funcionario)
+    {
+        lista.cabeca = funcionario->prox;
+    }
+    else if(lista.cauda == funcionario)
+    {
+        lista.cauda = funcionario->ante;
+    }
+    else
+    {
+        funcionario->ante->prox = funcionario->prox;
+        funcionario->prox->ante = funcionario->ante;
+    }
 
+    funcionario->prox = NULL;
+    funcionario->ante = NULL; 
+    lista.quantidade--;
+    return lista;
+}
+
+ListaFuncionarios adicionarListaFuncionario(ListaFuncionarios lista, NodeFuncionario *funcionario)
+{
+    if(lista.cabeca == NULL)
+    {
+        lista.cabeca = funcionario;
+        lista.cauda = funcionario;
+    }
+    else
+    {
+        lista.cauda->prox = funcionario;
+        funcionario->ante = lista.cauda;
+        lista.cauda = funcionario;
+    }
+    lista.quantidade++;
+    return lista;
+}
 
 /*################# FUNCOES IMPRIMIR #####################*/
 
@@ -417,3 +457,63 @@ int tempo_restante(Pedido *pedido, Funcionario funcionario[], Equipamento equipa
     return 0;
     }
 
+
+
+
+// Funções relacionados a bandeja
+
+bool todosItensProntos(Pedido pedido) {
+    for(int i = 0; i < pedido.num_itens; i++) {
+        if(pedido.itens[i].status != PRONTO) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+void atualizarPedidosParaMontagem(ListaPedidos *lista, ListaPedidos *fila_montagem) {
+    NodePedido *pivo = lista->cabeca;
+    while(pivo != NULL) {
+        if(todosItensProntos(pivo->pedido) && pivo->pedido.status != AGUARDANDO_MONTAGEM) {
+            pivo->pedido.status = AGUARDANDO_MONTAGEM;
+            *fila_montagem = adicionarLista(*fila_montagem, pivo->pedido);
+            printf("pedido %d pronto para montagem!\n", pivo->pedido.id);
+        }
+        pivo = pivo->prox;
+    }
+}
+
+void montarBandeja(ListaPedidos *fila_montagem, Funcionario funcionarios[], int num_funcionarios) {
+    if(fila_montagem->cabeca == NULL) return;
+
+    NodePedido *pedidoNode = fila_montagem->cabeca;
+    Pedido *pedido = &pedidoNode->pedido;
+
+    for(int i = 0; i < num_funcionarios; i++) {
+        Funcionario *f = &funcionarios[i];
+        if(f->status == LIVRE) {
+            for(int h = 0; h < f->num_habilidade; h++) {
+                //checa o funcionario disponivel
+                if(f->habilidades[h] == HABILIDADE_MONTAGEM) {
+                    f->status = OCUPADO; // status funcionario e inicio da montagem
+                    f->id_pedido_atual = pedido->id;
+
+                    printf("Funcionario %d iniciou montagem do pedido %d.\n", f->id, pedido->id);
+
+                    pedido->tempo_preparo_local = 30; // "tempo de preparo"
+
+                    pedido->status = ENTREGUE; //pedido montado
+                    printf("pedido %d foi ENTREGUE!\n", pedido->id);
+
+                    *fila_montagem = removerLista(*fila_montagem);
+
+                    f->status = LIVRE; // livrando funcionario
+                    f->id_pedido_atual = -1;// livra o funcionario do id do pedido
+
+                    return;
+                }
+            }
+        }
+    }
+}

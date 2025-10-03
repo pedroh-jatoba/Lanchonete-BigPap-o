@@ -43,6 +43,7 @@ typedef struct{
     Habilidade habilidades[3]; // Um funcionario pode ter multiplas habilidades
     int num_habilidade;
     StatusFuncionario status;
+    NomeLocal local_atual;
     int id_pedido_atual; // Para saber qual pedido ele está trabalhando
 } Funcionario; // :)^_____^O_O:-];O):O(>_<
 
@@ -54,6 +55,12 @@ typedef struct
     Pedido *pedido;
 } ItemPreparo;
 
+typedef struct 
+{
+    NodeFuncionario *cabeca;
+    NodeFuncionario *cauda;
+    int quantidade;
+} ListaFuncionarios;
 
 // Representa um equipamento com capacidade limitada (chapa, fritadeira, etc)
 typedef struct{
@@ -62,6 +69,7 @@ typedef struct{
     int capacidade_usada;
     ItemPreparo itens_preparo[6];
     ItemPreparo armazenamento[4];
+    ListaFuncionarios funcionarios;
     ListaPedidos fila;
 } Equipamento;
 
@@ -75,18 +83,23 @@ typedef struct
     int capacidade; // Tamanho máximo do vetor
 } Heap;
 
+
+typedef struct NodeFuncionario
+{
+    Funcionario funcionario;
+    struct NodeFuncionario *ante;
+    struct NodeFuncionario *prox;
+} NodeFuncionario;
+
+
+
+
 typedef struct 
 {
     NomeLocal nome;
-    ListaPedidos fila;
+    ListaPedidos fila_espera;
+    ListaFuncionarios funcionario;
     Heap heap;
-    StatusFuncionario status;
-    int capacidade_maxima;
     int capacidade_usada;
-    Pedido pedido[6]; //Transformar em vetor dinamico
+    Pedido pedido_sendo_feitos[6]; //Transformar em vetor dinamico
 } Locais;
-
-
-
-
-

@@ -26,7 +26,8 @@ typedef enum{
     RECEPCAO,
     MONTAR_BANDEJAS,
     SEPARADOR,
-    CAIXA
+    CAIXA,
+    RESERVA
 } NomeLocal;
 
 // Enum para o status de um funcionário
