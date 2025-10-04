@@ -6,8 +6,6 @@
 
 // Utilitários
 void sair();
-
-// Input
 int receberInput(bool res_auto, int opc_auto, int opc_manual);
 
 // Heap
@@ -19,35 +17,45 @@ void imprimirHeap(Heap* heap);
 
 // Fila de Prioridade
 void verificarEPriorizarPedidos(Locais *local, int tempo_atual);
-void processarFilaPrioridade(Locais *local);
 
-// Lista de pedidos (simples)
+// Lista de pedidos
 ListaPedidos criarLista();
 NodePedido* criarNodePedido(Pedido pedido);
-void adicionarListaPedidos(ListaPedidos *lista, NodePedido *novo_node); // adiciona no final
-void adicionarListaPedidosOrdenado(ListaPedidos *lista, NodePedido *novo_node);
-NodePedido* removerListaPedidos_front(ListaPedidos *lista); // remove e retorna a cabeça (ou NULL)
+void adicionarListaPedidos(ListaPedidos *lista, NodePedido *novo_node);
+NodePedido* removerListaPedidos_front(ListaPedidos *lista);
 void imprimirLista(ListaPedidos lista);
 
-// Funções de impressão helpers
+// Lista de funcionários
+ListaFuncionarios criarListaFuncionarios();
+void inicializarFuncionarios(ListaFuncionarios *lista); // Protótipo adicionado
+void adicionarListaFuncionario(ListaFuncionarios *lista, NodeFuncionario *novo_node);
+NodeFuncionario* removerNodeFuncionario(ListaFuncionarios *lista, NodeFuncionario *node_para_remover);
+NodeFuncionario* encontrarEAlocarFuncionario(ListaFuncionarios *reserva, Habilidade habilidade);
+void liberarFuncionario(NodeFuncionario *node, ListaFuncionarios *origem, ListaFuncionarios *destino_reserva);
+
+// Lista de itens de preparo
+ListaItemPreparo criarListaItemPreparo();
+NodeItemPreparo* criarNodeItemPreparo(ItemPreparo item);
+void adicionarListaItemPreparo(ListaItemPreparo *lista, NodeItemPreparo *novo_node);
+NodeItemPreparo* removerListaItemPreparo_front(ListaItemPreparo *lista);
+
+// Funções de impressão
 void imprimirPedido(Pedido pedido);
 void imprimirNomeDoItem(NomePedido nome);
 void imprimirStatusItem(StatusItem status);
 
 // Recepção / criação de pedidos
 NodePedido* receberPedido(bool res_auto, int *novo_id);
-void recepcao(Locais *r, int ciclo, bool res_auto, ListaFuncionarios *reserva);
+void recepcao(Locais *r, bool res_auto, ListaFuncionarios *reserva);
+void processarRecepcao(Locais *local_recepcao, Locais *local_separador, ListaFuncionarios *reserva, int ciclo);
 
-// Cálculo de preparo
-int calcularPreparo(NomePedido pedido);
-
-// Inicializadores simples
-ListaFuncionarios criarListaFuncionarios();
-
-//Separador
-// Adicione/Atualize estes protótipos em funcoes.h
+// Separador
 void distribuirItens(NodePedido *pedido_node, Equipamento equipamentos[]);
-void processarSeparador(Locais *local_separador, Equipamento equipamentos[], ListaFuncionarios *reserva, ListaPedidos *pedidos_em_preparo);
 void separador(Locais *local_separador, ListaFuncionarios *reserva);
+void processarSeparador(Locais *local_separador, Equipamento equipamentos[], ListaFuncionarios *reserva, ListaPedidos *pedidos_em_preparo, int ciclo);
+
+// Equipamentos
+void processarEquipamentos(Equipamento equipamentos[], ListaFuncionarios *reserva, int ciclo);
+void operarEquipamentos(Equipamento equipamentos[], ListaFuncionarios *reserva);
 
 #endif // FUNCOES_H

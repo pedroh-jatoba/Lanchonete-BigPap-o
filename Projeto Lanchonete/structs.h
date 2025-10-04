@@ -5,6 +5,7 @@
 #include "enums.h"
 
 // --- Estruturas dos Pedidos ---
+// MOVEMOS AS DEFINIÇÕES DE PEDIDO PARA ANTES DE ITEMPREPARO
 
 typedef struct {
     NomePedido nome;
@@ -12,27 +13,6 @@ typedef struct {
     int tempo_restante_preparo;
     StatusItem status;
 } ItemPedido;
-
-typedef struct ItemPreparo {
-    NomePedido nome;
-    int tempo_preparo_total;
-    int tempo_restante_preparo; // Novo campo para o timer
-    StatusItem status;
-    Pedido *pedido_pai; 
-    struct ItemPedido *item_original; // Ponteiro para o item no pedido original
-} ItemPreparo;
-
-typedef struct NodeItemPreparo {
-    ItemPreparo item;
-    struct NodeItemPreparo *ante;
-    struct NodeItemPreparo *prox;
-} NodeItemPreparo;
-
-typedef struct {
-    NodeItemPreparo *cabeca;
-    NodeItemPreparo *cauda;
-    int quantidade;
-} ListaItemPreparo;
 
 typedef struct {
     ItemPedido itens[4]; // Máx 4 itens (2 comer + 2 beber)
@@ -57,7 +37,31 @@ typedef struct {
     int quantidade;
 } ListaPedidos;
 
-// Funcionários e estruturas auxiliares
+
+typedef struct ItemPreparo {
+    NomePedido nome;
+    int tempo_preparo_total;
+    int tempo_restante_preparo;
+    StatusItem status;
+    Pedido *pedido_pai; 
+    ItemPedido *item_original; // <--- CORREÇÃO: Removido "struct"
+} ItemPreparo;
+
+typedef struct NodeItemPreparo {
+    ItemPreparo item;
+    struct NodeItemPreparo *ante;
+    struct NodeItemPreparo *prox;
+} NodeItemPreparo;
+
+typedef struct {
+    NodeItemPreparo *cabeca;
+    NodeItemPreparo *cauda;
+    int quantidade;
+} ListaItemPreparo;
+
+// --- Estruturas de Funcionários ---
+typedef struct NodePedido NodePedido; // Forward declaration para uso em Funcionario
+
 typedef struct {
     int id;
     Habilidade habilidades[3];
@@ -79,9 +83,8 @@ typedef struct {
     int quantidade;
 } ListaFuncionarios;
 
-// --- Estrutura de Equipamento (VERSÃO FINAL) ---
-
-#define MAX_CAPACIDADE_EQUIPAMENTO 6 // Um valor seguro para o tamanho dos arrays
+// --- Estrutura de Equipamento ---
+#define MAX_CAPACIDADE_EQUIPAMENTO 6
 
 typedef struct {
     NomeEquipamento nome;
@@ -89,19 +92,18 @@ typedef struct {
     int capacidade_usada;
     ListaItemPreparo fila_espera;
     
-    // Arrays para gerenciar o que está acontecendo AGORA no equipamento
     ItemPreparo itens_em_preparo[MAX_CAPACIDADE_EQUIPAMENTO];
     NodeFuncionario* funcionarios_alocados[MAX_CAPACIDADE_EQUIPAMENTO];
 } Equipamento;
 
-// Heap de pedidos (min-heap por tempo_preparo_total)
+// --- Heap de pedidos ---
 typedef struct {
     Pedido *pedidos;
     int quantidade;
     int capacidade;
 } Heap;
 
-// Locais
+// --- Estrutura de Locais ---
 typedef struct {
     NomeLocal nome;
     ListaPedidos fila_espera;
