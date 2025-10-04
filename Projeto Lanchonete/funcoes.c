@@ -139,6 +139,20 @@ void adicionarListaPedidos(ListaPedidos *lista, NodePedido *novo_node) {
     lista->quantidade++;
 }
 
+void removerNodePedido(ListaPedidos *lista, NodePedido *node) {
+    if (!lista || !node) return;
+
+    if (node->ante) node->ante->prox = node->prox;
+    else lista->cabeca = node->prox;
+
+    if (node->prox) node->prox->ante = node->ante;
+    else lista->cauda = node->ante;
+
+    node->prox = NULL;
+    node->ante = NULL;
+    lista->quantidade--;
+}
+
 NodePedido* removerListaPedidos_front(ListaPedidos *lista) {
     if (!lista || !lista->cabeca) return NULL;
     NodePedido *ret = lista->cabeca;
@@ -249,6 +263,97 @@ NodeItemPreparo* removerListaItemPreparo_front(ListaItemPreparo *lista) {
     return ret;
 }
 
+// ======================== FILA DE MONTAGEM ========================
+
+bool todosItensProntos(Pedido *pedido) {
+    for (int i = 0; i < pedido->num_itens; i++) {
+        // Ignora itens "NADA"
+        if (pedido->itens[i].nome == NADA) continue;
+        
+        if (pedido->itens[i].status != PRONTO) {
+            return false; // Encontrou um item que ainda não está pronto
+        }
+    }
+    return true; // Todos os itens estão prontos
+}
+
+void verificarPedidosProntos(ListaPedidos *pedidos_em_preparo, Locais *local_montagem) {
+    NodePedido *atual = pedidos_em_preparo->cabeca;
+    while (atual != NULL) {
+        NodePedido *proximo = atual->prox; // Guarda o próximo para o caso de remoção
+
+        if (todosItensProntos(&atual->pedido)) {
+            printf("MONTAGEM: Pedido %d esta com todos os itens prontos. Movendo para a fila de montagem.\n", atual->pedido.id);
+
+            // Remove o pedido da lista de "em preparo"
+            removerNodePedido(pedidos_em_preparo, atual);
+
+            // Adiciona na fila de espera da montagem
+            adicionarListaPedidos(&local_montagem->fila_espera, atual);
+        }
+        atual = proximo;
+    }
+}
+
+void processarMontagem(Locais *local_montagem, ListaFuncionarios *reserva, ListaPedidos *pedidos_entregues, int ciclo) {
+    NodeFuncionario *func_atual = local_montagem->funcionario.cabeca;
+    
+    while (func_atual != NULL) {
+        NodeFuncionario *proximo_func = func_atual->prox;
+        
+        if (func_atual->funcionario.status == OCUPADO && func_atual->funcionario.pedido_trabalhado != NULL) {
+            NodePedido *pedido_em_montagem = func_atual->funcionario.pedido_trabalhado;
+            pedido_em_montagem->pedido.tempo_preparo_local -= ciclo;
+
+            if (pedido_em_montagem->pedido.tempo_preparo_local <= 0) {
+                // --- PEDIDO ENTREGUE! ---
+                pedido_em_montagem->pedido.status = ENTREGUE;
+                printf("ENTREGA: Pedido %d foi montado e ENTREGUE!\n", pedido_em_montagem->pedido.id);
+                
+                // Move o pedido para a lista de entregues
+                adicionarListaPedidos(pedidos_entregues, pedido_em_montagem);
+
+                // Libera o funcionário
+                liberarFuncionario(func_atual, &local_montagem->funcionario, reserva);
+            }
+        }
+        func_atual = proximo_func;
+    }
+}
+
+void montarBandeja(Locais *local_montagem, ListaFuncionarios *reserva) {
+    // Enquanto houver pedidos na fila e for possível alocar funcionários
+    while (local_montagem->fila_espera.cabeca != NULL) {
+        
+        // Tenta encontrar um funcionário livre com a habilidade certa
+        NodeFuncionario *montador = encontrarEAlocarFuncionario(reserva, HABILIDADE_MONTAGEM);
+
+        if (montador == NULL) {
+            break; // Se não há montador, não pode iniciar mais tarefas
+        }
+
+        // Pega o primeiro pedido da fila de espera
+        NodePedido *pedido_para_montar = removerListaPedidos_front(&local_montagem->fila_espera);
+        
+        // Calcula o tempo de montagem
+        int tempo_montagem = 30; // Tempo base
+        for (int i = 0; i < pedido_para_montar->pedido.num_itens; i++) {
+            if (pedido_para_montar->pedido.itens[i].nome == REFRIGERANTE) {
+                tempo_montagem += 5; // Adiciona 5s para o refrigerante
+                break; // Adiciona apenas uma vez
+            }
+        }
+        pedido_para_montar->pedido.tempo_preparo_local = tempo_montagem;
+        
+        // Aloca a tarefa ao funcionário
+        montador->funcionario.pedido_trabalhado = pedido_para_montar;
+        montador->funcionario.local_atual = MONTAR_BANDEJAS;
+        adicionarListaFuncionario(&local_montagem->funcionario, montador);
+
+        printf("MONTAGEM: Funcionario %d iniciou a montagem do Pedido %d (duracao: %ds).\n", 
+               montador->funcionario.id, pedido_para_montar->pedido.id, tempo_montagem);
+    }
+}
 
 /*----------------- Funções de Funcionários -----------------*/
 ListaFuncionarios criarListaFuncionarios() {

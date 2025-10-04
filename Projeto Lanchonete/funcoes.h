@@ -54,6 +54,12 @@ void distribuirItens(NodePedido *pedido_node, Equipamento equipamentos[]);
 void separador(Locais *local_separador, ListaFuncionarios *reserva);
 void processarSeparador(Locais *local_separador, Equipamento equipamentos[], ListaFuncionarios *reserva, ListaPedidos *pedidos_em_preparo, int ciclo);
 
+//Montagem
+void verificarPedidosProntos(ListaPedidos *pedidos_em_preparo, Locais *local_montagem);
+void processarMontagem(Locais *local_montagem, ListaFuncionarios *reserva, ListaPedidos *pedidos_entregues, int ciclo);
+void montarBandeja(Locais *local_montagem, ListaFuncionarios *reserva);
+void removerNodePedido(ListaPedidos *lista, NodePedido *node);
+
 // Equipamentos
 void processarEquipamentos(Equipamento equipamentos[], ListaFuncionarios *reserva, int ciclo);
 void operarEquipamentos(Equipamento equipamentos[], ListaFuncionarios *reserva);

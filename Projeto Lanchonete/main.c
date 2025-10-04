@@ -17,6 +17,7 @@ void main_loop(int timer_global, int tam_ciclo, Equipamento equipamentos[], Loca
     ListaFuncionarios reserva = criarListaFuncionarios();
     inicializarFuncionarios(&reserva); 
 
+    ListaPedidos pedidos_entregues = criarLista();
     ListaPedidos pedidos_em_preparo = criarLista(); 
     bool res_auto = false;
 
@@ -26,7 +27,7 @@ void main_loop(int timer_global, int tam_ciclo, Equipamento equipamentos[], Loca
         res_auto = true;
         srand((unsigned) time(NULL));
     }
-
+    
     do {
         int op = fazerPedido(res_auto);
         switch (op) {
@@ -46,10 +47,11 @@ void main_loop(int timer_global, int tam_ciclo, Equipamento equipamentos[], Loca
 
         separador(&locais[SEPARADOR], &reserva);
         
-        processarRecepcao(&locais[RECEPCAO], &locais[SEPARADOR], &reserva, tam_ciclo);
-        processarSeparador(&locais[SEPARADOR], equipamentos, &reserva, &pedidos_em_preparo, tam_ciclo);
+        processarMontagem(&locais[MONTAR_BANDEJAS], &reserva, &pedidos_entregues, tam_ciclo);
         processarEquipamentos(equipamentos, &reserva, tam_ciclo);
-        operarEquipamentos(equipamentos, &reserva);
+        processarSeparador(&locais[SEPARADOR], equipamentos, &reserva, &pedidos_em_preparo, tam_ciclo);
+        processarRecepcao(&locais[RECEPCAO], &locais[SEPARADOR], &reserva, tam_ciclo);
+
 
         printf("\n=== FILA DE ESPERA DA RECEPÇÃO ===\n");
         imprimirLista(locais[RECEPCAO].fila_espera);
@@ -71,7 +73,14 @@ void main_loop(int timer_global, int tam_ciclo, Equipamento equipamentos[], Loca
                 imprimirHeap(&locais[i].heap);
             }
         }
-        
+        verificarPedidosProntos(&pedidos_em_preparo, &locais[MONTAR_BANDEJAS]);
+
+        montarBandeja(&locais[MONTAR_BANDEJAS], &reserva);
+
+        printf("\n--- PEDIDOS ENTREGUES ---\n");
+        imprimirLista(pedidos_entregues);
+        printf("-------------------------\n");
+
         timer_global -= tam_ciclo;
     } while (timer_global >= 0);
 }
